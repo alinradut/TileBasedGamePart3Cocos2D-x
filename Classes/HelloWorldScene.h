@@ -9,6 +9,8 @@
 #ifndef __HELLOWORLD_SCENE_H__
 #define __HELLOWORLD_SCENE_H__
 
+#define COCOS2D_DEBUG 1
+
 #include "cocos2d.h"
 #include "HelloWorldHud.h"
 
@@ -28,7 +30,8 @@ public:
 	void setViewpointCenter(cocos2d::CCPoint point);
 	void setPlayerPosition(cocos2d::CCPoint point);
 	cocos2d::CCPoint tileCoordForPosition(cocos2d::CCPoint position);
-	
+	void addEnemyAt(int x, int y);
+
 	// implement the "static node()" method manually
 	LAYER_NODE_FUNC(HelloWorld);
     

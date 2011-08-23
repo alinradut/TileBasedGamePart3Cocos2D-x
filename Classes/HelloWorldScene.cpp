@@ -78,6 +78,18 @@ bool HelloWorld::init()
 	int y = spawnPoint->objectForKey("y")->toInt();
 	
     this->addChild(_tileMap);
+	
+	CCMutableArray<CCStringToStringDictionary*> *allObjects = objects->getObjects();
+	CCMutableArray<CCStringToStringDictionary*>::CCMutableArrayIterator it;
+	for (it = allObjects->begin(); it != allObjects->end(); ++it)
+	{
+		if ((*it)->objectForKey(std::string("Enemy")) != NULL)
+		{
+			int x = (*it)->objectForKey("x")->toInt();
+			int y = (*it)->objectForKey("y")->toInt();
+			this->addEnemyAt(x, y);
+		}
+	}
 
 	_player = CCSprite::spriteWithFile("Player.png");
 	_player->retain();
@@ -196,3 +208,9 @@ CCPoint HelloWorld::tileCoordForPosition(cocos2d::CCPoint position)
     return ccp(x, y);
 }
 
+void HelloWorld::addEnemyAt(int x, int y)
+{
+	CCSprite *enemy = CCSprite::spriteWithFile("enemy1.png");
+	enemy->setPosition(ccp(x, y));
+	this->addChild(enemy);
+}
