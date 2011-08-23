@@ -78,6 +78,15 @@ bool HelloWorld::init()
 	int y = spawnPoint->objectForKey("y")->toInt();
 	
     this->addChild(_tileMap);
+
+	_player = CCSprite::spriteWithFile("Player.png");
+	_player->retain();
+	_player->setPosition(ccp (x, y));
+	this->addChild(_player);
+	
+	this->setViewpointCenter(_player->getPosition());
+	
+	
 	
 	CCMutableArray<CCStringToStringDictionary*> *allObjects = objects->getObjects();
 	CCMutableArray<CCStringToStringDictionary*>::CCMutableArrayIterator it;
@@ -90,13 +99,6 @@ bool HelloWorld::init()
 			this->addEnemyAt(x, y);
 		}
 	}
-
-	_player = CCSprite::spriteWithFile("Player.png");
-	_player->retain();
-	_player->setPosition(ccp (x, y));
-	this->addChild(_player);
-	
-	this->setViewpointCenter(_player->getPosition());
 	
 	this->setIsTouchEnabled(true);
 	
@@ -211,6 +213,42 @@ CCPoint HelloWorld::tileCoordForPosition(cocos2d::CCPoint position)
 void HelloWorld::addEnemyAt(int x, int y)
 {
 	CCSprite *enemy = CCSprite::spriteWithFile("enemy1.png");
+	enemy->retain();
 	enemy->setPosition(ccp(x, y));
 	this->addChild(enemy);
+	// Use our animation method and
+	// start the enemy moving toward the player
+	this->animateEnemy(enemy);
+}
+
+// callback. starts another iteration of enemy movement.
+void HelloWorld::enemyMoveFinished(cocos2d::CCSprite *enemy)
+{
+	this->animateEnemy(enemy);
+}
+
+// a method to move the enemy 10 pixels toward the player
+void HelloWorld::animateEnemy(cocos2d::CCSprite *enemy)
+{
+	// speed of the enemy
+	ccTime actualDuration = 0.3;
+
+	//rotate to face the player
+	CCPoint diff = ccpSub(_player->getPosition(), enemy->getPosition());
+	float angleRadians = atanf((float)diff.y / (float)diff.x);
+	float angleDegrees = CC_RADIANS_TO_DEGREES(angleRadians);
+	float cocosAngle = -1 * angleDegrees;
+	if (diff.x < 0) {
+		cocosAngle += 180;
+	}
+	enemy->setRotation(cocosAngle);
+	
+	CCPoint moveBy = ccpMult(ccpNormalize(ccpSub(_player->getPosition(),enemy->getPosition())), 10);
+	
+	// Create the actions
+	CCFiniteTimeAction *actionMove = CCMoveBy::actionWithDuration(actualDuration, moveBy);
+	CCFiniteTimeAction *actionMoveDone = CCCallFuncN::actionWithTarget(this, callfuncN_selector(HelloWorld::enemyMoveFinished));
+	enemy->runAction(CCSequence::actions(actionMove,
+										 actionMoveDone,
+										 NULL));
 }

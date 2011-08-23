@@ -31,6 +31,8 @@ public:
 	void setPlayerPosition(cocos2d::CCPoint point);
 	cocos2d::CCPoint tileCoordForPosition(cocos2d::CCPoint position);
 	void addEnemyAt(int x, int y);
+	void enemyMoveFinished(cocos2d::CCSprite *enemy);
+	void animateEnemy(cocos2d::CCSprite *enemy);
 
 	// implement the "static node()" method manually
 	LAYER_NODE_FUNC(HelloWorld);
