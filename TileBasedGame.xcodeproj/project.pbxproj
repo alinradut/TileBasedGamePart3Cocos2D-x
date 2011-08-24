@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B2BC3ED140596830057419C /* GameOverScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B2BC3EC140596830057419C /* GameOverScene.cpp */; };
 		3B7654F314044C0A00E9284C /* enemy1.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B7654EF14044C0A00E9284C /* enemy1.png */; };
 		3B7654F414044C0A00E9284C /* projectile-button-off.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B7654F014044C0A00E9284C /* projectile-button-off.png */; };
 		3B7654F514044C0A00E9284C /* projectile-button-on.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B7654F114044C0A00E9284C /* projectile-button-on.png */; };
@@ -315,6 +316,8 @@
 /* Begin PBXFileReference section */
 		1D6058910D05DD3D006BFB54 /* TileBasedGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TileBasedGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F3B9A820EF2151B00286867 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = SOURCE_ROOT; };
+		3B2BC3EB140596830057419C /* GameOverScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameOverScene.h; sourceTree = "<group>"; };
+		3B2BC3EC140596830057419C /* GameOverScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameOverScene.cpp; sourceTree = "<group>"; };
 		3B7654EF14044C0A00E9284C /* enemy1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = enemy1.png; sourceTree = "<group>"; };
 		3B7654F014044C0A00E9284C /* projectile-button-off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projectile-button-off.png"; sourceTree = "<group>"; };
 		3B7654F114044C0A00E9284C /* projectile-button-on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "projectile-button-on.png"; sourceTree = "<group>"; };
@@ -706,6 +709,8 @@
 				BF83631C13286EF300F3C033 /* HelloWorldScene.h */,
 				3BCD378614019B5600F5D2BA /* HelloWorldHud.cpp */,
 				3BCD378514019B5600F5D2BA /* HelloWorldHud.h */,
+				3B2BC3EC140596830057419C /* GameOverScene.cpp */,
+				3B2BC3EB140596830057419C /* GameOverScene.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1473,6 +1478,7 @@
 				D4D9411313EADBA700555460 /* AppDelegate.cpp in Sources */,
 				D4C3D25213F25E5600192C16 /* RootViewController.mm in Sources */,
 				3BCD378714019B5600F5D2BA /* HelloWorldHud.cpp in Sources */,
+				3B2BC3ED140596830057419C /* GameOverScene.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

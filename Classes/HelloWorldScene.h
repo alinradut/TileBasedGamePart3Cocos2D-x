@@ -35,7 +35,9 @@ public:
 	void animateEnemy(cocos2d::CCSprite *enemy);
 	void projectileMoveFinished(cocos2d::CCSprite *sprite);
 	void testCollisions(cocos2d::ccTime dt);
-
+	void win();
+	void lose();
+	
 	// implement the "static node()" method manually
 	LAYER_NODE_FUNC(HelloWorld);
     

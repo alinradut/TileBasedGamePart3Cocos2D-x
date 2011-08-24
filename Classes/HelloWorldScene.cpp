@@ -8,6 +8,7 @@
 
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include "GameOverScene.h"
 #include <string>
 
 using namespace std;
@@ -251,6 +252,10 @@ void HelloWorld::setPlayerPosition(cocos2d::CCPoint position)
 				_numCollected++;
 				_hud->numCollectedChanged(_numCollected);
 				SimpleAudioEngine::sharedEngine()->playEffect("pickup.caf");
+				
+				if (_numCollected == 2) {
+					this->win();
+				}
 			}
 		}
 	}
@@ -366,4 +371,32 @@ void HelloWorld::testCollisions(ccTime dt)
 		_projectiles->removeObject(projectile, true);
 		this->removeChild(projectile, true);
 	}
+	
+	for (jt = _enemies->begin(); jt != _enemies->end(); jt++)
+	{
+		CCSprite *target = *jt;
+		CCRect targetRect = CCRectMake(
+									   target->getPosition().x - (target->getContentSize().width/2), 
+									   target->getPosition().y - (target->getContentSize().height/2), 
+									   target->getContentSize().width, 
+									   target->getContentSize().height);
+		
+		if (CCRect::CCRectContainsPoint(targetRect, _player->getPosition())) {
+			this->lose();
+		}
+	}
+}
+
+void HelloWorld::win()
+{
+	GameOverScene *gameOverScene = GameOverScene::node();
+	gameOverScene->getLayer()->getLabel()->setString("You Win!");
+	CCDirector::sharedDirector()->replaceScene(gameOverScene);
+}
+
+void HelloWorld::lose()
+{
+	GameOverScene *gameOverScene = GameOverScene::node();
+	gameOverScene->getLayer()->getLabel()->setString("You Lose!");
+	CCDirector::sharedDirector()->replaceScene(gameOverScene);
 }
