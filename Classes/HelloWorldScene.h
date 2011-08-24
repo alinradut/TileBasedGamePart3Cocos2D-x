@@ -34,6 +34,7 @@ public:
 	void enemyMoveFinished(cocos2d::CCSprite *enemy);
 	void animateEnemy(cocos2d::CCSprite *enemy);
 	void projectileMoveFinished(cocos2d::CCSprite *sprite);
+	void testCollisions(cocos2d::ccTime dt);
 
 	// implement the "static node()" method manually
 	LAYER_NODE_FUNC(HelloWorld);
@@ -46,6 +47,8 @@ public:
 	CC_SYNTHESIZE(HelloWorldHud *, _hud, Hud);
 	CC_SYNTHESIZE(int, _numCollected, NumCollected);
 	CC_SYNTHESIZE(int, _mode, Mode);
+	CC_SYNTHESIZE(cocos2d::CCMutableArray<cocos2d::CCSprite *>*, _enemies, Enemies);
+	CC_SYNTHESIZE(cocos2d::CCMutableArray<cocos2d::CCSprite *>*, _projectiles, Projectiles);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

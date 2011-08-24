@@ -43,6 +43,8 @@ HelloWorld::~HelloWorld()
 	CC_SAFE_RELEASE_NULL(_player);
 	CC_SAFE_RELEASE_NULL(_meta);
 	CC_SAFE_RELEASE_NULL(_hud);
+	CC_SAFE_RELEASE_NULL(_enemies);
+	CC_SAFE_RELEASE_NULL(_projectiles);
 }
 
 // on "init" you need to initialize your instance
@@ -57,6 +59,9 @@ bool HelloWorld::init()
 	SimpleAudioEngine::sharedEngine()->preloadEffect("hit.caf");
 	SimpleAudioEngine::sharedEngine()->preloadEffect("move.caf");
 	SimpleAudioEngine::sharedEngine()->playBackgroundMusic("TileMap.caf");
+	
+	_enemies = new CCMutableArray<CCSprite *>;
+	_projectiles = new CCMutableArray<CCSprite *>;
 	
 	_tileMap = CCTMXTiledMap::tiledMapWithTMXFile("TileMap.tmx");
     _tileMap->retain();
@@ -87,8 +92,6 @@ bool HelloWorld::init()
 	
 	this->setViewpointCenter(_player->getPosition());
 	
-	
-	
 	CCMutableArray<CCStringToStringDictionary*> *allObjects = objects->getObjects();
 	CCMutableArray<CCStringToStringDictionary*>::CCMutableArrayIterator it;
 	for (it = allObjects->begin(); it != allObjects->end(); ++it)
@@ -106,6 +109,8 @@ bool HelloWorld::init()
 	_numCollected = 0;
 	
 	_mode = 0;
+	
+	this->schedule(schedule_selector(HelloWorld::testCollisions));
 	
 	return true;
 }
@@ -215,6 +220,8 @@ void HelloWorld::ccTouchEnded(CCTouch *touch, CCEvent *event)
 		CCFiniteTimeAction *actionMoveTo = CCMoveTo::actionWithDuration(realMoveDuration, realDest);
 		CCFiniteTimeAction *actionMoveDone = CCCallFuncN::actionWithTarget(this, callfuncN_selector(HelloWorld::projectileMoveFinished));
 		projectile->runAction(CCSequence::actionOneTwo(actionMoveTo, actionMoveDone));
+		
+		_projectiles->addObject(projectile);
 	}
 
 }
@@ -267,6 +274,7 @@ void HelloWorld::addEnemyAt(int x, int y)
 	// Use our animation method and
 	// start the enemy moving toward the player
 	this->animateEnemy(enemy);
+	_enemies->addObject(enemy);
 }
 
 // callback. starts another iteration of enemy movement.
@@ -304,4 +312,58 @@ void HelloWorld::animateEnemy(cocos2d::CCSprite *enemy)
 void HelloWorld::projectileMoveFinished(CCSprite *sprite)
 {
 	this->removeChild(sprite, true);
+	_projectiles->removeObject(sprite, true);
+}
+
+void HelloWorld::testCollisions(ccTime dt)
+{
+	CCMutableArray<CCSprite*> *projectilesToDelete = new CCMutableArray<CCSprite*>;
+
+	CCMutableArray<CCSprite *>::CCMutableArrayIterator it, jt;
+	// iterate through projectiles
+	for (it = _projectiles->begin(); it != _projectiles->end(); it++) {
+		CCSprite *projectile = *it;
+		CCRect projectileRect = CCRectMake(projectile->getPosition().x - (projectile->getContentSize().width/2),
+										   projectile->getPosition().y - (projectile->getContentSize().height/2),
+										   projectile->getContentSize().width,
+										   projectile->getContentSize().height);
+		
+		CCMutableArray<CCSprite*> *targetsToDelete = new CCMutableArray<CCSprite*>;
+		
+		// iterate through enemies, see if any intersect with current projectile
+		for (jt = _enemies->begin(); jt != _enemies->end(); jt++)
+		{
+			CCSprite *target = *jt;
+			CCRect targetRect = CCRectMake(
+										   target->getPosition().x - (target->getContentSize().width/2), 
+										   target->getPosition().y - (target->getContentSize().height/2), 
+										   target->getContentSize().width, 
+										   target->getContentSize().height);
+			
+			if (CCRect::CCRectIntersectsRect(projectileRect, targetRect)) {
+				targetsToDelete->addObject(target);
+			}
+		}
+		
+		// delete all hit enemies
+		for (jt = targetsToDelete->begin(); jt != targetsToDelete->end(); jt++) 
+		{
+			_enemies->removeObject(*jt);
+			this->removeChild((*jt), true);
+		}
+		
+		if (targetsToDelete->count() > 0)
+		{
+			projectilesToDelete->addObject(projectile);
+		}
+		
+		targetsToDelete->release();
+	}
+	
+	// remove all the projectiles that hit.
+	for (it = projectilesToDelete->begin(); it != projectilesToDelete->end(); it++) {
+		CCSprite *projectile = *it;
+		_projectiles->removeObject(projectile, true);
+		this->removeChild(projectile, true);
+	}
 }
