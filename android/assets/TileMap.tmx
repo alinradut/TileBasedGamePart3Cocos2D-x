@@ -23,6 +23,41 @@
  </layer>
  <objectgroup name="Objects" width="50" height="50">
   <object name="SpawnPoint" x="45" y="337"/>
+  <object name="EnemySpawn1" x="549" y="522" width="26" height="20">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
+  <object name="EnemySpawn1" x="562" y="172" width="26" height="20">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
+  <object name="EnemySpawn1" x="185" y="616" width="26" height="20">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
+  <object name="EnemySpawn1" x="841" y="414" width="26" height="20">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
+  <object name="EnemySpawn1" x="891" y="210" width="26" height="20">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
+  <object name="EnemySpawn1" x="794" y="48" width="26" height="20">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
+  <object name="EnemySpawn1" x="561" y="10" width="26" height="20">
+   <properties>
+    <property name="Enemy" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer name="Foreground" width="50" height="50">
   <data encoding="base64" compression="zlib">
