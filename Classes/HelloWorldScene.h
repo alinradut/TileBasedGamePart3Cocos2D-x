@@ -44,6 +44,7 @@ public:
 	CC_SYNTHESIZE(cocos2d::CCSprite *, _player, Player);
 	CC_SYNTHESIZE(HelloWorldHud *, _hud, Hud);
 	CC_SYNTHESIZE(int, _numCollected, NumCollected);
+	CC_SYNTHESIZE(int, _mode, Mode);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

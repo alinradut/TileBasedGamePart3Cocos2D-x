@@ -29,7 +29,8 @@ CCScene* HelloWorld::scene()
 	hud->retain();
 	scene->addChild(hud);
 	layer->setHud(hud);
-	
+	hud->setGameLayer(layer);
+
 	// return the scene
 	return scene;
 }
@@ -103,6 +104,8 @@ bool HelloWorld::init()
 	this->setIsTouchEnabled(true);
 	
 	_numCollected = 0;
+	
+	_mode = 0;
 	
 	return true;
 }
