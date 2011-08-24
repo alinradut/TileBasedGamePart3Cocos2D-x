@@ -33,6 +33,7 @@ public:
 	void addEnemyAt(int x, int y);
 	void enemyMoveFinished(cocos2d::CCSprite *enemy);
 	void animateEnemy(cocos2d::CCSprite *enemy);
+	void projectileMoveFinished(cocos2d::CCSprite *sprite);
 
 	// implement the "static node()" method manually
 	LAYER_NODE_FUNC(HelloWorld);

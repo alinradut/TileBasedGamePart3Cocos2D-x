@@ -141,37 +141,82 @@ bool HelloWorld::ccTouchBegan(CCTouch *touch, CCEvent *event)
 
 void HelloWorld::ccTouchEnded(CCTouch *touch, CCEvent *event)
 {
-	CCPoint touchLocation = touch->locationInView(touch->view());
-	touchLocation = CCDirector::sharedDirector()->convertToGL(touchLocation);
-	touchLocation = this->convertToNodeSpace(touchLocation);
-	
-	CCPoint playerPos = _player->getPosition();
-	CCPoint diff = ccpSub(touchLocation, playerPos);
-	
-	// using fabs because using abs throws a "abs in ambiguous" error
-	if (fabs(diff.x) > fabs(diff.y)) {
-        if (diff.x > 0) {
-            playerPos.x += _tileMap->getTileSize().width;
-        } else {
-            playerPos.x -= _tileMap->getTileSize().width; 
-        }    
-    } else {
-        if (diff.y > 0) {
-            playerPos.y += _tileMap->getTileSize().height;
-        } else {
-            playerPos.y -= _tileMap->getTileSize().height;
-        }
-    }
-	
-	if (playerPos.x <= (_tileMap->getMapSize().width * _tileMap->getTileSize().width) &&
-        playerPos.y <= (_tileMap->getMapSize().height * _tileMap->getTileSize().height) &&
-        playerPos.y >= 0 &&
-        playerPos.x >= 0 ) 
-    {
-		this->setPlayerPosition(playerPos);
-    }
-	
-	this->setViewpointCenter(_player->getPosition());
+	if (_mode == 0)
+	{
+		CCPoint touchLocation = touch->locationInView(touch->view());
+		touchLocation = CCDirector::sharedDirector()->convertToGL(touchLocation);
+		touchLocation = this->convertToNodeSpace(touchLocation);
+		
+		CCPoint playerPos = _player->getPosition();
+		CCPoint diff = ccpSub(touchLocation, playerPos);
+		
+		// using fabs because using abs throws a "abs in ambiguous" error
+		if (fabs(diff.x) > fabs(diff.y)) {
+			if (diff.x > 0) {
+				playerPos.x += _tileMap->getTileSize().width;
+			} else {
+				playerPos.x -= _tileMap->getTileSize().width; 
+			}    
+		} else {
+			if (diff.y > 0) {
+				playerPos.y += _tileMap->getTileSize().height;
+			} else {
+				playerPos.y -= _tileMap->getTileSize().height;
+			}
+		}
+		
+		if (playerPos.x <= (_tileMap->getMapSize().width * _tileMap->getTileSize().width) &&
+			playerPos.y <= (_tileMap->getMapSize().height * _tileMap->getTileSize().height) &&
+			playerPos.y >= 0 &&
+			playerPos.x >= 0 ) 
+		{
+			this->setPlayerPosition(playerPos);
+		}
+		
+		this->setViewpointCenter(_player->getPosition());
+	}
+	else {
+		// Find where the touch is
+		CCPoint touchLocation = touch->locationInView(touch->view());
+		touchLocation = CCDirector::sharedDirector()->convertToGL(touchLocation);
+		touchLocation = this->convertToNodeSpace(touchLocation);
+		
+		// Create a projectile and put it at the player's location
+		CCSprite *projectile = CCSprite::spriteWithFile("Projectile.png");
+		projectile->setPosition(_player->getPosition());
+		this->addChild(projectile);
+		
+		// Determine where we wish to shoot the projectile to
+		int realX;
+		
+		// Are we shooting to the left or right?
+		CCPoint diff = ccpSub(touchLocation, _player->getPosition());
+		if (diff.x > 0)
+		{
+			realX = (_tileMap->getMapSize().width * _tileMap->getTileSize().width) +
+				(projectile->getContentSize().width/2);
+		} else {
+			realX = -(_tileMap	->getMapSize().width * _tileMap->getTileSize().width) -
+				(projectile->getContentSize().width/2);
+		}
+		float ratio = (float) diff.y / (float) diff.x;
+		int realY = ((realX - projectile->getPosition().x) * ratio) + projectile->getPosition().y;
+		CCPoint realDest = ccp(realX, realY);
+		
+		
+		// Determine the length of how far we're shooting
+		int offRealX = realX - projectile->getPosition().x;
+		int offRealY = realY - projectile->getPosition().y;
+		float length = sqrtf((offRealX*offRealX) + (offRealY*offRealY));
+		float velocity = 480/1; // 480pixels/1sec
+		float realMoveDuration = length/velocity;
+		
+		// Move projectile to actual endpoint
+		CCFiniteTimeAction *actionMoveTo = CCMoveTo::actionWithDuration(realMoveDuration, realDest);
+		CCFiniteTimeAction *actionMoveDone = CCCallFuncN::actionWithTarget(this, callfuncN_selector(HelloWorld::projectileMoveFinished));
+		projectile->runAction(CCSequence::actionOneTwo(actionMoveTo, actionMoveDone));
+	}
+
 }
 
 void HelloWorld::setPlayerPosition(cocos2d::CCPoint position)
@@ -254,4 +299,9 @@ void HelloWorld::animateEnemy(cocos2d::CCSprite *enemy)
 	enemy->runAction(CCSequence::actions(actionMove,
 										 actionMoveDone,
 										 NULL));
+}
+
+void HelloWorld::projectileMoveFinished(CCSprite *sprite)
+{
+	this->removeChild(sprite, true);
 }
